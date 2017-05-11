@@ -6,6 +6,8 @@
 #define left 2
 #define right 3
 
+int finishpos;
+char start[10],finish[10];
 int search(char *a)//找到空格位置
 {
 	int i=-1;
@@ -40,15 +42,54 @@ int move(char *a,int pos,int dir)//移动空格
 	}
 	return 1;
 }
+int solve(char* a,int n)
+{
+	int pos=search(a);
+	if(pos==finishpos)//可能成功了
+	{
+		if(strcmp(a,finish)==0)
+		printf("%d",n);
+		return 1;
+	}
+	else if(n<1000)
+	{
+		if(move(a,pos,up))
+		{
+			if(solve(a,n+1)==0)
+			move(a,search(a),down);//还原
+			else return 1;
+		}
+		else if(move(a,pos,down))
+		{
+			if(solve(a,n+1)==0)
+			move(a,search(a),up);//还原
+			else return 1;
+		}
+		else if(move(a,pos,left))
+		{
+			if(solve(a,n+1)==0)
+			move(a,search(a),right);//还原
+			else return 1;
+		}
+		else if(move(a,pos,right))
+		{
+			if(solve(a,n+1)==0)
+			move(a,search(a),left);//还原
+			else return 1;
+		}
+	}
+	return 0;
+}
 
 int main()
 {
-	char start[10],finish[10];
+	int ans=0;
 	scanf("%s",start);
 	scanf("%s",finish);
-	move(start,search(start),up);
-	printf("%s\n",start);
-	printf("%s\n",finish);
+	finishpos=search(finish);
+	ans=solve(start,0);
+	if(ans==0)
+	printf("-1");
 	return 0;
 }
  
